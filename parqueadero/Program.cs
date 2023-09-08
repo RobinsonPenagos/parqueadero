@@ -1,5 +1,10 @@
-﻿using System;
+﻿using ConsoleAppArquiSoftDao02;
+using Org.BouncyCastle.Asn1.Cmp;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
+
+//ControllerEmpleado controller = new ControllerEmpleado(dao);
 
 namespace ConsoleAppArquiSoftDao02
 {
@@ -13,12 +18,12 @@ namespace ConsoleAppArquiSoftDao02
 
             while (true)
             {
-                Console.WriteLine("PARQUEADERO PENAGOSCITY");
+                Console.WriteLine("\nPARQUEADERO PENAGOSCITY");
                 Console.WriteLine("***********************");
                 Console.WriteLine("     BIENVENIDOS");
                 Console.WriteLine("\n");
-                Console.WriteLine("Por favor digite la letra de la opcion deseada:\n");
-                Console.WriteLine("[L]istar | [R]egistrar | [A]ctualizar | [E]liminar | [S]alir: ");
+                Console.WriteLine("Por favor digite el numero de la opción deseada:\n");
+                Console.WriteLine("[1] Lista Clientes\n[2] Registrar\n[3] Actualizar\n[4] Eliminar\n[5] Salir:\n ");
                 action = Console.ReadLine()?.ToUpper();
 
                 if (!string.IsNullOrEmpty(action))
@@ -27,19 +32,19 @@ namespace ConsoleAppArquiSoftDao02
                     {
                         switch (action)
                         {
-                            case "L":
+                            case "1":
                                 ListarEmpleados();
                                 break;
-                            case "R":
+                            case "2":
                                 RegistrarEmpleado();
                                 break;
-                            case "A":
+                            case "3":
                                 ActualizarEmpleado();
                                 break;
-                            case "E":
+                            case "4":
                                 EliminarEmpleado();
                                 break;
-                            case "S":
+                            case "5":
                                 return;
                             default:
                                 Console.WriteLine("Opción no válida. Por favor, seleccione una opción válida.");
@@ -61,7 +66,7 @@ namespace ConsoleAppArquiSoftDao02
                 Empleado parqueadero = InputEmpleado();
                 if (dao.Registrar(parqueadero))
                 {
-                    Console.WriteLine("Registro exitoso: " + parqueadero.Id);
+                    Console.WriteLine("Registro exitoso: " + parqueadero.id);
                     Console.WriteLine("\n\nCreado: " + parqueadero);
                 }
                 else
@@ -71,7 +76,7 @@ namespace ConsoleAppArquiSoftDao02
             }
             catch (DAOException e)
             {
-                Console.WriteLine("Error al registrar el cliente: " + e.Message);
+                Console.WriteLine("Error al registrar el empleado: " + e.Message);
             }
         }
 
@@ -85,11 +90,13 @@ namespace ConsoleAppArquiSoftDao02
 
             string nombre = InputNombre();
             string apellido = InputApellido();
+            int cedula = InputCedula();
             string placa = InputPlaca();
-            int duracion_meses = InputDuracionMeses("Ingrese la duracion de meses: ");
+            int duracion_meses = InputDuracionMeses();
+            DateTime fecha = InputFecha();
             double precio_mensual = InputPrecioMensual();
 
-            parqueadero = new Empleado(id, nombre, apellido, placa, duracion_meses, precio_mensual);
+            parqueadero = new Empleado(id, nombre, apellido, cedula, placa, duracion_meses, fecha, precio_mensual);
             try
             {
                 if (dao.Actualizar(parqueadero))
@@ -107,6 +114,7 @@ namespace ConsoleAppArquiSoftDao02
             }
         }
 
+        // CRUD
         private static void EliminarEmpleado()
         {
             int id = InputId();
@@ -123,11 +131,11 @@ namespace ConsoleAppArquiSoftDao02
 
             if (parqueadero != null && dao.Eliminar(parqueadero))
             {
-                Console.WriteLine("Cliente eliminado: " + parqueadero.Id);
+                Console.WriteLine("Empleado eliminado: " + parqueadero.id);
             }
             else
             {
-                Console.WriteLine("Error al eliminar el Cliente: ");
+                Console.WriteLine("Error al eliminar el empleado.");
             }
         }
 
@@ -143,22 +151,54 @@ namespace ConsoleAppArquiSoftDao02
             }
             catch (DAOException e)
             {
-                Console.WriteLine("Error al obtener todos los clientes: " + e.Message);
+                Console.WriteLine("Error al obtener todos los clientuchos *Program: " + e.Message);
                 Console.WriteLine("StackTrace: " + e.StackTrace);
             }
         }
 
         private static Empleado InputEmpleado()
         {
+            //int id = InputId();
             string nombre = InputNombre();
             string apellido = InputApellido();
+            int cedula = InputCedula();
             string placa = InputPlaca();
-            int duracion_meses = InputDuracionMeses("Ingrese la duracion de meses: ");
+            int duracion_meses = InputDuracionMeses();
+            DateTime fecha = InputFecha();
             double precio_mensual = InputPrecioMensual();
-            return new Empleado(nombre, apellido, placa, duracion_meses, precio_mensual );
+
+            return new Empleado(nombre, apellido, cedula, placa, duracion_meses, fecha, precio_mensual);
         }
 
-        private static int InputId()
+        // Datos del cliente
+
+        /*private static int InputId()
+        {
+            int id;
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("Ingrese un valor entero para el ID del cliente: ");
+                    if (int.TryParse(Console.ReadLine(), out id))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error de formato de número");
+                    }
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Error de formato de número");
+                }
+            }
+            return id;
+        }*/
+
+        // validacion
+         private static int InputId()
         {
             int id;
             while (true)
@@ -182,72 +222,113 @@ namespace ConsoleAppArquiSoftDao02
             }
             return id;
         }
-
         private static string InputNombre()
         {
             return InputString("Ingrese el nombre del cliente: ");
         }
-
         private static string InputApellido()
         {
             return InputString("Ingrese el apellido del cliente: ");
         }
 
-        private static string InputPlaca()
+        private static int InputCedula()
         {
-            return InputString("Ingrese la placa del vehiculo: ");
-        }
-
-        private static int InputDuracionMeses(string message)
-        {
-            int duracion_meses;
-            /*bool inputValido = false;*/
-
-            /*while (!inputValido)*/
-            while (true)
-            {
-                /*Console.WriteLine("Ingrese el número de meses adquiridos: ");*/
-                Console.WriteLine(message);
-                if (int.TryParse(Console.ReadLine(), out duracion_meses) /*|| duracion_meses > 0*/)
-                {
-                    /*inputValido = true;*/
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Por favor, ingrese un valor numérico válido y positivo.");
-                }
-            }
-
-            return duracion_meses;
-        }
-
-        private static double InputPrecioMensual()
-        {
-            double precio_mensual;
+            int cedula;
             while (true)
             {
                 try
                 {
-                    Console.WriteLine("Ingrese el valor de la mensualidad: ");
-                    if (double.TryParse(Console.ReadLine(), out precio_mensual))
+                    Console.WriteLine("Ingrese el número de cédula del cliente: ");
+                    if (int.TryParse(Console.ReadLine(), out cedula))
+                    {
+                        return cedula;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error: Ingrese un número válido de cédula.");
+                    }
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Error: Formato de número incorrecto.");
+                }
+            }
+        }
+
+        private static string InputPlaca()
+        {
+            return InputString("Ingrese el número de la placa: ");
+        }
+        private static int InputDuracionMeses()
+        {
+            int duracion_meses;
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("Ingrese el número de meses a pagar: ");
+                    if (int.TryParse(Console.ReadLine(), out duracion_meses))
                     {
                         break;
                     }
                     else
                     {
-                        Console.WriteLine("Error de formato de número");
+                        Console.WriteLine("Error de formato de número: ");
                     }
                 }
                 catch (FormatException)
                 {
-                    Console.WriteLine("Error de formato de número");
+                    Console.WriteLine("Error del formato de número: ");
                 }
             }
-            return precio_mensual;
+            return duracion_meses;
+        }
+        private static DateTime InputFecha()
+        {
+            DateTime fecha;
+            bool entradaValida = false;
+
+            do
+            {
+                Console.Write("Ingrese la fecha (Formato: dd/mm/yyyy): ");
+                string input = Console.ReadLine();
+
+                if (DateTime.TryParseExact(input, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fecha))
+                {
+                    entradaValida = true;
+                }
+                else
+                {
+                    Console.WriteLine("Entrada no válida. Asegúrese de ingresar la fecha en el formato correcto (dd/mm/yyyy).");
+                }
+            } while (!entradaValida);
+
+            return fecha;
         }
 
-        
+        private static double InputPrecioMensual()
+        {
+            double precio;
+            bool entradaValida = false;
+
+            do
+            {
+                Console.Write("Ingrese el precio mensual: ");
+                string input = Console.ReadLine();
+
+                if (double.TryParse(input, out precio))
+                {
+                    entradaValida = true;
+                }
+                else
+                {
+                    Console.WriteLine("Entrada no válida. Debe ingresar un valor numérico.");
+                }
+            } while (!entradaValida);
+
+            return precio;
+        }
+
         private static string InputString(string message)
         {
             string s;

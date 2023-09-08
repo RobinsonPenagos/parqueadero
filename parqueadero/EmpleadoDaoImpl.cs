@@ -9,10 +9,10 @@ namespace ConsoleAppArquiSoftDao02
 {
     public class EmpleadoDaoImpl : IEmpleadoDao
     {
-        private const string INSERT_QUERY = "INSERT INTO parqueadero (nombre, apellido, placa, duracion_meses, precio_mensual) VALUES ( @nombre, @apellido, @placa, @duracion_meses, @precio_mensual)";
+        private const string INSERT_QUERY = "INSERT INTO parqueadero (id, nombre, apellido, cedula, placa, duracion_meses, fecha, precio_mensual) VALUES (@id, @nombre, @apellido, @cedula, @placa, @duracion_meses, @fecha, @precio_mensual)";
         private const string SELECT_ALL_QUERY = "SELECT * FROM parqueadero ORDER BY ID";
-        private const string UPDATE_QUERY = "UPDATE parqueadero SET nombre=@nombre, apellido=@apellido, placa=@placa, duracion_meses=@duracion_meses, precio_mensual=@precio_mensual WHERE ID=@id";
-        private const string DELETE_QUERY = "DELETE FROM parqueadero WHERE ID=@id";
+        private const string UPDATE_QUERY = "UPDATE parqueadero SET id=@id, nombre=@nombre, apellido=@apellido, cedula=@cedula, placa=@placa, duracion_meses=@duracion_meses, fecha=@fecha, precio_mensual=@precio_mensual WHERE ID=@id";
+        private const string DELETE_QUERY = "DELETE FROM parqueadero WHERE id=@id";
         private const string SELECT_BY_ID_QUERY = "SELECT * FROM parqueadero WHERE id=@id";
         private const string SELECT_ALL_EMPLEADOS_QUERY = "SELECT * FROM parqueadero";
 
@@ -32,14 +32,17 @@ namespace ConsoleAppArquiSoftDao02
                 ProveState();
                 using (MySqlCommand cmd = new MySqlCommand(INSERT_QUERY, _connection))
                 {
-                    cmd.Parameters.AddWithValue("@nombre", parqueadero.Nombre);
-                    cmd.Parameters.AddWithValue("@apellido", parqueadero.Apellido);
-                    cmd.Parameters.AddWithValue("@placa", parqueadero.Placa);
-                    cmd.Parameters.AddWithValue("@duracion_meses", parqueadero.DuracionMeses);
-                    cmd.Parameters.AddWithValue("@precioMensual", parqueadero.PrecioMensual);
+                    cmd.Parameters.AddWithValue("@id", parqueadero.id);
+                    cmd.Parameters.AddWithValue("@nombre", parqueadero.nombre);
+                    cmd.Parameters.AddWithValue("@apellido", parqueadero.apellido);
+                    cmd.Parameters.AddWithValue("@cedula", parqueadero.cedula);
+                    cmd.Parameters.AddWithValue("@placa", parqueadero.placa);
+                    cmd.Parameters.AddWithValue("@duracion_meses", parqueadero.duracion_meses);
+                    cmd.Parameters.AddWithValue("@fecha", parqueadero.fecha);
+                    cmd.Parameters.AddWithValue("@precio_mensual", parqueadero.precio_mensual);
                     cmd.ExecuteNonQuery();
 
-                    parqueadero.Id = (int)cmd.LastInsertedId;
+                    parqueadero.id = (int)cmd.LastInsertedId;
 
                     registrado = true;
                 }
@@ -98,12 +101,14 @@ namespace ConsoleAppArquiSoftDao02
                 using (MySqlCommand cmd = new MySqlCommand(UPDATE_QUERY, _connection))
                 {
 
-                    cmd.Parameters.AddWithValue("@nombre", parqueadero.Nombre);
-                    cmd.Parameters.AddWithValue("@apellido", parqueadero.Apellido);
-                    cmd.Parameters.AddWithValue("@placa", parqueadero.Placa);
-                    cmd.Parameters.AddWithValue("@duracion_meses", parqueadero.DuracionMeses);
-                    cmd.Parameters.AddWithValue("@precio_mensual", parqueadero.PrecioMensual);
-                    cmd.Parameters.AddWithValue("@id", parqueadero.Id);
+                    cmd.Parameters.AddWithValue("@nombre", parqueadero.nombre);
+                    cmd.Parameters.AddWithValue("@apellido", parqueadero.apellido);
+                    cmd.Parameters.AddWithValue("@cedula", parqueadero.cedula);
+                    cmd.Parameters.AddWithValue("@placa", parqueadero.placa);
+                    cmd.Parameters.AddWithValue("@duracion_meses", parqueadero.duracion_meses);
+                    cmd.Parameters.AddWithValue("@fecha", parqueadero.fecha);
+                    cmd.Parameters.AddWithValue("@precio_mensual", parqueadero.precio_mensual);
+                    cmd.Parameters.AddWithValue("@id", parqueadero.id);
                     cmd.ExecuteNonQuery();
                     actualizado = true;
                 }
@@ -130,7 +135,7 @@ namespace ConsoleAppArquiSoftDao02
 
                 using (MySqlCommand cmd = new MySqlCommand(DELETE_QUERY, _connection))
                 {
-                    cmd.Parameters.AddWithValue("@id", parqueadero.Id);
+                    cmd.Parameters.AddWithValue("@id", parqueadero.id);
                     cmd.ExecuteNonQuery();
                     eliminado = true;
                 }
@@ -215,12 +220,15 @@ namespace ConsoleAppArquiSoftDao02
         private Empleado CrearEmpleadoDesdeDataReader(MySqlDataReader reader)
         {
             int id = reader.IsDBNull(reader.GetOrdinal("id")) ? 0 : reader.GetInt32("id");
+
             string nombre = reader.GetString("nombre");
             string apellido = reader.GetString("apellido");
+            int cedula = reader.GetInt32("cedula");
             string placa = reader.GetString("placa");
             int duracion_meses = reader.GetInt32("duracion_meses");
+            DateTime fecha = reader.GetDateTime("fecha");
             double precio_mensual = reader.GetDouble("precio_mensual");
-            return new Empleado(id, nombre, apellido, placa, duracion_meses, precio_mensual );
+            return new Empleado(id, nombre, apellido, cedula, placa, duracion_meses, fecha, precio_mensual );
         }
 
         private void ProveState()
