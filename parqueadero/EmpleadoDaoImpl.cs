@@ -9,24 +9,85 @@ namespace ConsoleAppArquiSoftDao02
 {
     public class EmpleadoDaoImpl : IEmpleadoDao
     {
-        private const string INSERT_QUERY = "INSERT INTO parqueadero ( nombre, apellido, cedula, placa, duracion_meses, fecha, precio_mensual) VALUES ( @nombre, @apellido, @cedula, @placa, @duracion_meses, @fecha, @precio_mensual)";
-        private const string SELECT_ALL_QUERY = "SELECT * FROM parqueadero ORDER BY ID";
-        private const string UPDATE_QUERY = "UPDATE parqueadero SET id=@id, nombre=@nombre, apellido=@apellido, cedula=@cedula, placa=@placa, duracion_meses=@duracion_meses, fecha=@fecha, precio_mensual=@precio_mensual WHERE ID=@id";
-        private const string DELETE_QUERY = "DELETE FROM parqueadero WHERE id=@id";
-        private const string SELECT_BY_ID_QUERY = "SELECT * FROM parqueadero WHERE id=@id";
-        private const string SELECT_ALL_EMPLEADOS_QUERY = "SELECT * FROM parqueadero";
-
+        private const string INSERT_QUERY = "INSERT INTO parqueadero ( nombre, apellido, cedula, duracion_meses, fecha, precio_mensual) VALUES ( @nombre, @apellido, @cedula,  @duracion_meses, @fecha, @precio_mensual);";
+        private const string SELECT_ALL_QUERY = "SELECT id, nombre, apellido, cedula, duracion_meses, fecha, precio_mensual FROM parqueadero ORDER BY id;";
+        private const string UPDATE_QUERY = "UPDATE parqueadero SET nombre=@nombre, apellido=@apellido, cedula=@cedula, duracion_meses=@duracion_meses, fecha=@fecha, precio_mensual=@precio_mensual WHERE id=@id;";
+        private const string DELETE_QUERY = "DELETE FROM parqueadero WHERE id=@id;";
+        private const string SELECT_BY_ID_QUERY = "SELECT * FROM parqueadero WHERE id=@id;";
+        private const string SELECT_ALL_EMPLEADOS_QUERY = "SELECT * FROM parqueadero;";
         private readonly MySqlConnection _connection;
-
         public EmpleadoDaoImpl(MySqlConnection connection)
         {
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
 
+        public double CalcularIngresosMensuales()
+        {
+            try
+            {
+                ProveState();
+                double totalIngresos = 0.0;
+
+                using (MySqlCommand cmd = new MySqlCommand(SELECT_ALL_QUERY, _connection))
+                {
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            double precioMensual = reader.GetDouble("precio_mensual");
+                            totalIngresos += precioMensual;
+                        }
+                    }
+                }
+                return totalIngresos;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al calcular los ingresos totales: " + ex.Message);
+                return 0.0;
+            }
+            finally
+            {
+                _connection.Close();
+            }
+        }
+
+        public double CalcularIngresosTotales()
+        {
+            try
+            {
+                ProveState();
+                double totalIngresos = 0.0;
+
+                using (MySqlCommand cmd = new MySqlCommand(SELECT_ALL_QUERY, _connection))
+                {
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            double precioMensual = reader.GetDouble("precio_mensual");
+                            int duracionMeses = reader.GetInt32("duracion_meses");
+
+                            totalIngresos += precioMensual * duracionMeses;
+                        }
+                    }
+                }
+                return totalIngresos;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al calcular los ingresos totales: " + ex.Message);
+                return 0.0;
+            }
+            finally
+            {
+                _connection.Close();
+            }
+        }
+
         public bool Registrar(Empleado parqueadero)
         {
             bool registrado = false;
-
             try
             {
                 ProveState();
@@ -36,7 +97,6 @@ namespace ConsoleAppArquiSoftDao02
                     cmd.Parameters.AddWithValue("@nombre", parqueadero.nombre);
                     cmd.Parameters.AddWithValue("@apellido", parqueadero.apellido);
                     cmd.Parameters.AddWithValue("@cedula", parqueadero.cedula);
-                    cmd.Parameters.AddWithValue("@placa", parqueadero.placa);
                     cmd.Parameters.AddWithValue("@duracion_meses", parqueadero.duracion_meses);
                     cmd.Parameters.AddWithValue("@fecha", parqueadero.fecha);
                     cmd.Parameters.AddWithValue("@precio_mensual", parqueadero.precio_mensual);
@@ -49,7 +109,7 @@ namespace ConsoleAppArquiSoftDao02
             }
             catch (Exception ex)
             {
-                throw new DAOException("Error al registrar el cliente", ex);
+                throw new DAOException("Error al registrar el parqueadero", ex);
             }
             finally
             {
@@ -80,7 +140,7 @@ namespace ConsoleAppArquiSoftDao02
             }
             catch (Exception ex)
             {
-                throw new DAOException("Error al obtener los clientes", ex);
+                throw new DAOException("Error al obtener los parqueaderos", ex);
             }
             finally
             {
@@ -100,22 +160,20 @@ namespace ConsoleAppArquiSoftDao02
 
                 using (MySqlCommand cmd = new MySqlCommand(UPDATE_QUERY, _connection))
                 {
-
-                    cmd.Parameters.AddWithValue("@id", parqueadero.id);
                     cmd.Parameters.AddWithValue("@nombre", parqueadero.nombre);
                     cmd.Parameters.AddWithValue("@apellido", parqueadero.apellido);
                     cmd.Parameters.AddWithValue("@cedula", parqueadero.cedula);
-                    cmd.Parameters.AddWithValue("@placa", parqueadero.placa);
                     cmd.Parameters.AddWithValue("@duracion_meses", parqueadero.duracion_meses);
                     cmd.Parameters.AddWithValue("@fecha", parqueadero.fecha);
                     cmd.Parameters.AddWithValue("@precio_mensual", parqueadero.precio_mensual);
+                    cmd.Parameters.AddWithValue("@id", parqueadero.id);
                     cmd.ExecuteNonQuery();
                     actualizado = true;
                 }
             }
             catch (Exception ex)
             {
-                throw new DAOException("Error al actualizar el cliente", ex);
+                throw new DAOException("Error al actualizar el parqueadero", ex);
             }
             finally
             {
@@ -142,7 +200,7 @@ namespace ConsoleAppArquiSoftDao02
             }
             catch (Exception ex)
             {
-                throw new DAOException("Error al eliminar el cliente", ex);
+                throw new DAOException("Error al eliminar el parqueadero", ex);
             }
             finally
             {
@@ -175,7 +233,7 @@ namespace ConsoleAppArquiSoftDao02
             }
             catch (Exception ex)
             {
-                throw new DAOException("Error al obtener el cliente por ID", ex);
+                throw new DAOException("Error al obtener el parqueadero por ID", ex);
             }
             finally
             {
@@ -193,7 +251,7 @@ namespace ConsoleAppArquiSoftDao02
             {
                 ProveState();
 
-                using (MySqlCommand cmd = new MySqlCommand(SELECT_ALL_EMPLEADOS_QUERY, _connection))
+                using (MySqlCommand cmd = new MySqlCommand(SELECT_ALL_QUERY, _connection))
                 {
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -207,7 +265,8 @@ namespace ConsoleAppArquiSoftDao02
             }
             catch (Exception ex)
             {
-                throw new DAOException("Error al obtener todos los clientes", ex);
+                Console.WriteLine("Error al obtener los parqueaderos: " + ex.Message);
+                Console.WriteLine("StackTrace: " + ex.StackTrace);
             }
             finally
             {
@@ -220,15 +279,14 @@ namespace ConsoleAppArquiSoftDao02
         private Empleado CrearEmpleadoDesdeDataReader(MySqlDataReader reader)
         {
             int id = reader.IsDBNull(reader.GetOrdinal("id")) ? 0 : reader.GetInt32("id");
+            string nombre = reader.IsDBNull(reader.GetOrdinal("nombre")) ? string.Empty : reader.GetString("nombre");
+            string apellido = reader.IsDBNull(reader.GetOrdinal("apellido")) ? string.Empty : reader.GetString("apellido");
+            int cedula = reader.IsDBNull(reader.GetOrdinal("cedula")) ? 0 : reader.GetInt32("cedula");
+            int duracion_meses = reader.IsDBNull(reader.GetOrdinal("duracion_meses")) ? 0 : reader.GetInt32("duracion_meses");
+            DateTime fecha = reader.IsDBNull(reader.GetOrdinal("fecha")) ? DateTime.MinValue : reader.GetDateTime("fecha");
+            double precio_mensual = reader.IsDBNull(reader.GetOrdinal("precio_mensual")) ? 0.0 : reader.GetDouble("precio_mensual");
 
-            string nombre = reader.GetString("nombre");
-            string apellido = reader.GetString("apellido");
-            int cedula = reader.GetInt32("cedula");
-            string placa = reader.GetString("placa");
-            int duracion_meses = reader.GetInt32("duracion_meses");
-            DateTime fecha = reader.GetDateTime("fecha");
-            double precio_mensual = reader.GetDouble("precio_mensual");
-            return new Empleado(id, nombre, apellido, cedula, placa, duracion_meses, fecha, precio_mensual );
+            return new Empleado(id, nombre, apellido, cedula, duracion_meses, fecha, precio_mensual);
         }
 
         private void ProveState()
@@ -239,5 +297,9 @@ namespace ConsoleAppArquiSoftDao02
             }
         }
 
+        public List<Empleado> Estadistica()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

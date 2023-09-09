@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConsoleAppArquiSoftDao02;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -22,7 +23,7 @@ namespace ConsoleAppArquiSoftDao02
             }
             catch (DAOException e)
             {
-                Console.WriteLine("Error al registrar el cliente: " + e.Message);
+                Console.WriteLine("Error al registrar el parqueadero: " + e.Message);
                 return false;
             }
         }
@@ -35,7 +36,7 @@ namespace ConsoleAppArquiSoftDao02
             }
             catch (DAOException e)
             {
-                Console.WriteLine("Error al actualizar el cliente: " + e.Message);
+                Console.WriteLine("Error al actualizar el parqueadero: " + e.Message);
                 return false;
             }
         }
@@ -48,7 +49,7 @@ namespace ConsoleAppArquiSoftDao02
             }
             catch (DAOException e)
             {
-                Console.WriteLine("Error al eliminar el cliente: " + e.Message);
+                Console.WriteLine("Error al eliminar el parqueadero: " + e.Message);
                 return false;
             }
         }
@@ -62,8 +63,25 @@ namespace ConsoleAppArquiSoftDao02
             }
             catch (DAOException e)
             {
-                Console.WriteLine("Error al obtener los clientes: " + e.Message);
+                Console.WriteLine("Error al obtener los parqueaderos: " + e.Message);
+            }
+        }
+
+        public void VerEstadisticas()
+        {
+            try
+            {
+                double ingresosMensuales = dao.CalcularIngresosMensuales();
+                double ingresosTotales = dao.CalcularIngresosTotales();
+
+                Console.WriteLine("Ingresos del mes actual: $" + ingresosMensuales);
+                Console.WriteLine("Ingresos totales de todos los parqueaderos: $" + ingresosTotales);
+            }
+            catch (DAOException e)
+            {
+                Console.WriteLine("Error al calcular las estadísticas: " + e.Message);
             }
         }
     }
 }
+
