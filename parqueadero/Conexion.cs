@@ -7,7 +7,7 @@ namespace ConsoleAppArquiSoftDao02
 {
     public sealed class Conexion
     {
-        private static readonly string ConnectionString = "server=localhost;user=root;password=;database=parqueaderodb;";
+        private static readonly string ConnectionString = "server=localhost;user=root;password=;database=gymdb;";
         private MySqlConnection _connection;
 
         //Se implementa el patrón Singleton utilizando la propiedad estática Instance para garantizar

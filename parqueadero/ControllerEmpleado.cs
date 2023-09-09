@@ -14,11 +14,11 @@ namespace ConsoleAppArquiSoftDao02
             this.dao = dao ?? throw new ArgumentNullException(nameof(dao));
         }
 
-        public bool RegistrarEmpleado(Empleado parqueadero)
+        public bool RegistrarEmpleado(Empleado cliente)
         {
             try
             {
-                return dao.Registrar(parqueadero);
+                return dao.Registrar(cliente);
             }
             catch (DAOException e)
             {
@@ -27,11 +27,11 @@ namespace ConsoleAppArquiSoftDao02
             }
         }
 
-        public bool ActualizarEmpleado(Empleado parqueadero)
+        public bool ActualizarEmpleado(Empleado cliente)
         {
             try
             {
-                return dao.Actualizar(parqueadero);
+                return dao.Actualizar(cliente);
             }
             catch (DAOException e)
             {
@@ -40,11 +40,11 @@ namespace ConsoleAppArquiSoftDao02
             }
         }
 
-        public bool EliminarEmpleado(Empleado parqueadero)
+        public bool EliminarEmpleado(Empleado cliente)
         {
             try
             {
-                return dao.Eliminar(parqueadero);
+                return dao.Eliminar(cliente);
             }
             catch (DAOException e)
             {
@@ -57,8 +57,21 @@ namespace ConsoleAppArquiSoftDao02
         {
             try
             {
-                List<Empleado> parqueadero = dao.Obtener();
-                vista.VerEmpleados(parqueadero);
+                List<Empleado> cliente = dao.Obtener();
+                vista.VerEmpleados(cliente);
+            }
+            catch (DAOException e)
+            {
+                Console.WriteLine("Error al obtener los clientes: " + e.Message);
+            }
+        }
+
+        public void VerEstadisticas()
+        {
+            try
+            {
+                List<Empleado> cliente = dao.Obtener();
+                vista.VerEmpleados(cliente);
             }
             catch (DAOException e)
             {

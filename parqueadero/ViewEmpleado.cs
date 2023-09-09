@@ -6,9 +6,9 @@ namespace ConsoleAppArquiSoftDao02
 {
     public class ViewEmpleado
     {
-        public void VerEmpleado(Empleado parqueadero)
+        public void VerEmpleado(Empleado cliente)
         {
-            Console.WriteLine("Datos del Cliente:\n" + parqueadero.ToString());
+            Console.WriteLine("Datos del Cliente:\n" + cliente.ToString());
         }
 
         public void VerEmpleados(List<Empleado> empleados)
@@ -20,10 +20,10 @@ namespace ConsoleAppArquiSoftDao02
             }
 
             Console.WriteLine("Lista de clientes:");
-            foreach (Empleado parqueadero in empleados)
+            foreach (Empleado cliente in empleados)
             {
                 Console.WriteLine("------------");
-                Console.WriteLine(parqueadero.ToString());
+                Console.WriteLine(cliente.ToString());
             }
         }
     }

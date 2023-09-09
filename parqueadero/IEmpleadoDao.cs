@@ -6,12 +6,14 @@ namespace ConsoleAppArquiSoftDao02
 {
     public interface IEmpleadoDao
     {
-        bool Registrar(Empleado parqueadero);   
+        double CalcularIngresosMensuales();
+        double CalcularIngresosTotales();
+        bool Registrar(Empleado cliente);   
         List<Empleado> Obtener();
-        bool Actualizar(Empleado parqueadero);
-        bool Eliminar(Empleado parqueadero);
-        Empleado ObtenerEmpleadoPorId(int id);
         List<Empleado> ObtenerTodosLosEmpleados();
+        bool Actualizar(Empleado cliente);
+        bool Eliminar(Empleado cliente);
+        Empleado ObtenerEmpleadoPorId(int id);
 
     }
 }
