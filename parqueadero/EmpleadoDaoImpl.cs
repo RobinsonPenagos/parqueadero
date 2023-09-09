@@ -9,7 +9,7 @@ namespace ConsoleAppArquiSoftDao02
 {
     public class EmpleadoDaoImpl : IEmpleadoDao
     {
-        private const string INSERT_QUERY = "INSERT INTO parqueadero (id, nombre, apellido, cedula, placa, duracion_meses, fecha, precio_mensual) VALUES (@id, @nombre, @apellido, @cedula, @placa, @duracion_meses, @fecha, @precio_mensual)";
+        private const string INSERT_QUERY = "INSERT INTO parqueadero ( nombre, apellido, cedula, placa, duracion_meses, fecha, precio_mensual) VALUES ( @nombre, @apellido, @cedula, @placa, @duracion_meses, @fecha, @precio_mensual)";
         private const string SELECT_ALL_QUERY = "SELECT * FROM parqueadero ORDER BY ID";
         private const string UPDATE_QUERY = "UPDATE parqueadero SET id=@id, nombre=@nombre, apellido=@apellido, cedula=@cedula, placa=@placa, duracion_meses=@duracion_meses, fecha=@fecha, precio_mensual=@precio_mensual WHERE ID=@id";
         private const string DELETE_QUERY = "DELETE FROM parqueadero WHERE id=@id";
@@ -101,6 +101,7 @@ namespace ConsoleAppArquiSoftDao02
                 using (MySqlCommand cmd = new MySqlCommand(UPDATE_QUERY, _connection))
                 {
 
+                    cmd.Parameters.AddWithValue("@id", parqueadero.id);
                     cmd.Parameters.AddWithValue("@nombre", parqueadero.nombre);
                     cmd.Parameters.AddWithValue("@apellido", parqueadero.apellido);
                     cmd.Parameters.AddWithValue("@cedula", parqueadero.cedula);
@@ -108,7 +109,6 @@ namespace ConsoleAppArquiSoftDao02
                     cmd.Parameters.AddWithValue("@duracion_meses", parqueadero.duracion_meses);
                     cmd.Parameters.AddWithValue("@fecha", parqueadero.fecha);
                     cmd.Parameters.AddWithValue("@precio_mensual", parqueadero.precio_mensual);
-                    cmd.Parameters.AddWithValue("@id", parqueadero.id);
                     cmd.ExecuteNonQuery();
                     actualizado = true;
                 }
