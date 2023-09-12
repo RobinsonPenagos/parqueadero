@@ -18,11 +18,11 @@ namespace ConsoleAppArquiSoftDao02
 
             while (true)
             {
-                Console.WriteLine("-----------------------");
-                Console.WriteLine("GYM PROGRAM");
-                Console.WriteLine("-----------------------");
+                Console.WriteLine("");
+                Console.WriteLine("         ////////////////////");
+                Console.WriteLine("         CITY PARKING PENAGOS\n");
                 Console.WriteLine("\nPor favor digite el numero de la opción deseada:\n");
-                Console.WriteLine("[1] Lista parqueaderos\n[2] Registrar\n[3] Actualizar\n[4] Eliminar\n[5] Estadisticas gym \n[6]Salir:\n ");
+                Console.WriteLine("[1] Lista clientes\n[2] Ingresar Nuevo\n[3] Actualizar\n[4] Eliminar\n[5] Total ingresos \n[6]Salir:\n ");
                 action = Console.ReadLine()?.ToUpper();
 
                 if (!string.IsNullOrEmpty(action))
@@ -60,17 +60,21 @@ namespace ConsoleAppArquiSoftDao02
                 }
             }
         }
-
+        // lamada de las estadisticas
         private static void ingresosEstadistica()
         {
             try
             {
-                Console.WriteLine("Calculando estadísticas...");
+                Console.WriteLine("INFORME DE INGRESOS");
+                Console.WriteLine("-------------------");
                 double ingresosMensuales = dao.CalcularIngresosMensuales();
                 double ingresosTotales = dao.CalcularIngresosTotales();
 
-                Console.WriteLine("Ingresos del mes actual: $" + ingresosMensuales);
-                Console.WriteLine("Ingresos totales de todos los parqueaderos: $" + ingresosTotales);
+                Console.WriteLine("Ingreso total del mes: = $" + ingresosMensuales);
+                Console.WriteLine("Ingreso del mes actual, mas los meses pagos por adelantado");
+                Console.WriteLine("                 " +
+                    "NETO: = $" + ingresosTotales);
+                Console.WriteLine("------------------");
             }
             catch (DAOException e)
             {
@@ -82,11 +86,10 @@ namespace ConsoleAppArquiSoftDao02
         {
             try
             {
-                Console.WriteLine("Obteniendo todos los parqueadero...");
+                Console.WriteLine("Obteniendo todos los clientes activos...");
                 List<Empleado> todosLosEmpleados = dao.ObtenerTodosLosEmpleados();
-                Console.WriteLine("-------------------------------------");
-                Console.WriteLine("\nObtención de parqueaderos exitosa.");
-                Console.WriteLine("-------------------------------------");
+                Console.WriteLine("");
+                Console.WriteLine("\nLista de clientes inscritos en el sistema:\n\n");
                 foreach (Empleado parqueadero in todosLosEmpleados)
                 {
                     Console.WriteLine(parqueadero.ToString() + "\n");
@@ -94,7 +97,7 @@ namespace ConsoleAppArquiSoftDao02
             }
             catch (DAOException e)
             {
-                Console.WriteLine("Error al obtener todos los parqueaderos: " + e.Message);
+                Console.WriteLine("Error al obtener todos los clientes activos: " + e.Message);
                 Console.WriteLine("StackTrace: " + e.StackTrace);
             }
         }
@@ -110,12 +113,12 @@ namespace ConsoleAppArquiSoftDao02
                 }
                 else
                 {
-                    Console.WriteLine("Error al registrar el parqueadero.");
+                    Console.WriteLine("Error al registrar el cliente.");
                 }
             }
             catch (DAOException e)
             {
-                Console.WriteLine("Error al registrar el empleado: " + e.Message);
+                Console.WriteLine("Error al registrar el cliente: " + e.Message);
             }
         }
         private static void ActualizarEmpleado()
@@ -142,12 +145,12 @@ namespace ConsoleAppArquiSoftDao02
                 }
                 else
                 {
-                    Console.WriteLine("Error al actualizar el parqueadero.");
+                    Console.WriteLine("Error al actualizar el cliente.");
                 }
             }
             catch (DAOException e)
             {
-                Console.WriteLine("Error al actualizar el parqueadero: " + e.Message);
+                Console.WriteLine("Error al actualizar el cliente: " + e.Message);
             }
         }
         private static void EliminarEmpleado()
@@ -165,11 +168,11 @@ namespace ConsoleAppArquiSoftDao02
 
             if (parqueadero != null && dao.Eliminar(parqueadero))
             {
-                Console.WriteLine("Empleado eliminado: " + parqueadero.id);
+                Console.WriteLine("Cliente eliminado: " + parqueadero.id);
             }
             else
             {
-                Console.WriteLine("Error al eliminar el empleado.");
+                Console.WriteLine("Error al eliminar el cliente.");
             }
         }
 
@@ -191,7 +194,7 @@ namespace ConsoleAppArquiSoftDao02
             {
                 try
                 {
-                    Console.WriteLine("Ingrese un valor entero para el ID del parqueadero: ");
+                    Console.WriteLine("Ingrese un valor entero para el ID del cliente: ");
                     if (int.TryParse(Console.ReadLine(), out id))
                     {
                         break;
@@ -210,11 +213,11 @@ namespace ConsoleAppArquiSoftDao02
         }
         private static string InputNombre()
         {
-            return InputString("Ingrese el nombre del parqueadero: ");
+            return InputString("Ingrese el nombre del cliente: ");
         }
         private static string InputApellido()
         {
-            return InputString("Ingrese el apellido del parqueadero: ");
+            return InputString("Ingrese el apellido del cliente: ");
         }
         private static int InputCedula()
         {
@@ -223,7 +226,7 @@ namespace ConsoleAppArquiSoftDao02
             {
                 try
                 {
-                    Console.WriteLine("Ingrese el número de cédula del parqueadero: ");
+                    Console.WriteLine("Ingrese el número de cédula del cliente: ");
                     if (int.TryParse(Console.ReadLine(), out cedula))
                     {
                         return cedula;
@@ -239,10 +242,10 @@ namespace ConsoleAppArquiSoftDao02
                 }
             }
         }
-        private static string InputPlaca()
+       /* private static string InputPlaca()
         {
             return InputString("Ingrese el número de la placa: ");
-        }
+        }*/
         private static int InputDuracionMeses()
         {
             int duracion_meses;
@@ -274,7 +277,7 @@ namespace ConsoleAppArquiSoftDao02
 
             do
             {
-                Console.Write("Ingrese la fecha (Formato: dd/mm/yyyy): ");
+                Console.WriteLine("Ingrese la fecha de inicio de la inscripcion: (Formato: dd/mm/yyyy): ");
                 string input = Console.ReadLine();
 
                 if (DateTime.TryParseExact(input, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fecha))
@@ -296,7 +299,7 @@ namespace ConsoleAppArquiSoftDao02
 
             do
             {
-                Console.Write("Ingrese el precio mensual: ");
+                Console.WriteLine("Ingrese el precio mensual: ");
                 string input = Console.ReadLine();
 
                 if (double.TryParse(input, out precio))

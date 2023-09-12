@@ -23,7 +23,7 @@ namespace ConsoleAppArquiSoftDao02
             }
             catch (DAOException e)
             {
-                Console.WriteLine("Error al registrar el parqueadero: " + e.Message);
+                Console.WriteLine("Error al registrar el cliente: " + e.Message);
                 return false;
             }
         }
@@ -36,7 +36,7 @@ namespace ConsoleAppArquiSoftDao02
             }
             catch (DAOException e)
             {
-                Console.WriteLine("Error al actualizar el parqueadero: " + e.Message);
+                Console.WriteLine("Error al actualizar el cliente: " + e.Message);
                 return false;
             }
         }
@@ -49,7 +49,7 @@ namespace ConsoleAppArquiSoftDao02
             }
             catch (DAOException e)
             {
-                Console.WriteLine("Error al eliminar el parqueadero: " + e.Message);
+                Console.WriteLine("Error al eliminar el cliente: " + e.Message);
                 return false;
             }
         }
@@ -63,10 +63,10 @@ namespace ConsoleAppArquiSoftDao02
             }
             catch (DAOException e)
             {
-                Console.WriteLine("Error al obtener los parqueaderos: " + e.Message);
+                Console.WriteLine("Error al obtener los detos de los clientes: " + e.Message);
             }
         }
-
+        // calcular los porcentajes
         public void VerEstadisticas()
         {
             try
@@ -74,8 +74,9 @@ namespace ConsoleAppArquiSoftDao02
                 double ingresosMensuales = dao.CalcularIngresosMensuales();
                 double ingresosTotales = dao.CalcularIngresosTotales();
 
-                Console.WriteLine("Ingresos del mes actual: $" + ingresosMensuales);
-                Console.WriteLine("Ingresos totales de todos los parqueaderos: $" + ingresosTotales);
+                Console.WriteLine("Ingreso total por mes: = $" + ingresosMensuales);
+                Console.WriteLine("Ingreso del mes actual mas los meses pagos por adelantado");
+                Console.WriteLine("NETO: = $" + ingresosTotales);
             }
             catch (DAOException e)
             {

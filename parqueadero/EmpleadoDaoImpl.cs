@@ -140,7 +140,7 @@ namespace ConsoleAppArquiSoftDao02
             }
             catch (Exception ex)
             {
-                throw new DAOException("Error al obtener los parqueaderos", ex);
+                throw new DAOException("Error al obtener los datos de los clientes", ex);
             }
             finally
             {
@@ -173,7 +173,7 @@ namespace ConsoleAppArquiSoftDao02
             }
             catch (Exception ex)
             {
-                throw new DAOException("Error al actualizar el parqueadero", ex);
+                throw new DAOException("Error al actualizar los datos del cliente", ex);
             }
             finally
             {
@@ -200,7 +200,7 @@ namespace ConsoleAppArquiSoftDao02
             }
             catch (Exception ex)
             {
-                throw new DAOException("Error al eliminar el parqueadero", ex);
+                throw new DAOException("Error al eliminar el cliente", ex);
             }
             finally
             {
@@ -233,7 +233,7 @@ namespace ConsoleAppArquiSoftDao02
             }
             catch (Exception ex)
             {
-                throw new DAOException("Error al obtener el parqueadero por ID", ex);
+                throw new DAOException("Error al obtener el cliente por ID", ex);
             }
             finally
             {
@@ -265,7 +265,7 @@ namespace ConsoleAppArquiSoftDao02
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error al obtener los parqueaderos: " + ex.Message);
+                Console.WriteLine("Error al obtener los datos de los clientes: " + ex.Message);
                 Console.WriteLine("StackTrace: " + ex.StackTrace);
             }
             finally

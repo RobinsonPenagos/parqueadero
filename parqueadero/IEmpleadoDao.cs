@@ -4,6 +4,7 @@ using System.Text;
 
 namespace ConsoleAppArquiSoftDao02
 {
+
     public interface IEmpleadoDao
     {
         double CalcularIngresosMensuales();
